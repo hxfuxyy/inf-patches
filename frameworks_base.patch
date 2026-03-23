@@ -146,3 +146,29 @@ diff -Naur a/services/core/java/com/android/server/wm/DisplayRotation.java b/ser
          // Use the saved rotation for tabletop mode, if set.
          if (mFoldController != null && mFoldController.shouldRevertOverriddenRotation()) {
              int prevRotation = rotation;
+diff -Naur a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt	2026-02-04 13:44:07.723608522 +0000
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt	2026-03-23 11:33:24.000000000 +0000
+@@ -37,6 +37,7 @@
+ import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardClockStyleSection
+ import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardSliceViewSection
++import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardWidgetViewSection
+ import com.android.systemui.keyguard.ui.view.layout.sections.SmartspaceSection
+ import com.android.systemui.keyguard.ui.view.layout.sections.SplitShadeGuidelines
+ import com.android.systemui.keyguard.ui.view.layout.sections.SplitShadeMediaSection
+@@ -73,6 +74,7 @@
+     keyguardClockStyleSection: KeyguardClockStyleSection,
+     aODStyleSection: AODStyleSection,
+     mediaSection: SplitShadeMediaSection,
+     keyguardSliceViewSection: KeyguardSliceViewSection,
++    keyguardWidgetViewSection: KeyguardWidgetViewSection,
+ ) : KeyguardBlueprint {
+     override val id: String = ID
+ 
+@@ -94,6 +96,7 @@
+             keyguardSliceViewSection,
+             infoWidgetsSection,
++            keyguardWidgetViewSection,
+             keyguardClockStyleSection,
+             aODStyleSection,
+             mediaSection,
