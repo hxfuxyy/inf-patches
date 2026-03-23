@@ -8,6 +8,7 @@ Patches for compiling [ProjectInfinity-X](https://github.com/ProjectInfinity-X) 
 |---|---|
 | `frameworks_base.patch` | `frameworks/base` |
 | `packages_apps_Settings.patch` | `packages/apps/Settings` |
+| `updater_vanilla.patch` | `packages/apps/Updater` |
 
 ## Usage
 ```bash
