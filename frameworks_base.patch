@@ -173,19 +173,3 @@ diff -Naur a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/
              keyguardClockStyleSection,
              aODStyleSection,
              mediaSection,
---- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardSectionsModule.kt
-+++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardSectionsModule.kt
-@@ -54,6 +54,13 @@
-         fun aODStyleSection(impl: AODStyleSection): KeyguardSection
-     }
- 
-+    @Module
-+    interface KeyguardWidgetViewSectionModule {
-+        @Binds
-+        @IntoSet
-+        fun keyguardWidgetViewSection(impl: KeyguardWidgetViewSection): KeyguardSection
-+    }
-+
-     @BindsOptionalOf
-     @Named(KEYGUARD_AMBIENT_INDICATION_AREA_SECTION)
-     abstract fun defaultAmbientIndicationAreaSection(): KeyguardSection
