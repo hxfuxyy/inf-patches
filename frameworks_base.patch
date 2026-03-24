@@ -173,3 +173,27 @@ diff -Naur a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/
              keyguardClockStyleSection,
              aODStyleSection,
              mediaSection,
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardWidgetViewSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardWidgetViewSection.kt
+@@ -270,4 +270,9 @@
+         }
+         widgetView = null
+     }
++
++    // Use instance identity so blueprint intersect() treats each blueprint's
++    // instance as distinct → addViews/removeViews are called on blueprint switch
++    override fun equals(other: Any?): Boolean = this === other
++    override fun hashCode(): Int = System.identityHashCode(this)
+ }
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardClockStyleSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardClockStyleSection.kt
+@@ -132,4 +132,9 @@
+         }
+         clockStyleView = null
+     }
++
++    // Use instance identity so blueprint intersect() treats each blueprint's
++    // instance as distinct → addViews/removeViews are called on blueprint switch
++    override fun equals(other: Any?): Boolean = this === other
++    override fun hashCode(): Int = System.identityHashCode(this)
+ }
