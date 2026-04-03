@@ -146,3 +146,4 @@ diff -Naur a/services/core/java/com/android/server/wm/DisplayRotation.java b/ser
          // Use the saved rotation for tabletop mode, if set.
          if (mFoldController != null && mFoldController.shouldRevertOverriddenRotation()) {
              int prevRotation = rotation;
+             
