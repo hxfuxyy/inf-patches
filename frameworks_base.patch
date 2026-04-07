@@ -1,6 +1,6 @@
 diff -Naur a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml
 --- a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml	1970-01-01 00:00:00.000000000 +0000
-+++ b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml	2026-02-04 13:44:19.112607654 +0000
++++ b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml	2026-01-01 00:00:00.000000000 +0000
 @@ -0,0 +1,23 @@
 +<vector xmlns:android="http://schemas.android.com/apk/res/android"
 +    android:width="120dp"
@@ -25,34 +25,39 @@ diff -Naur a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml b/li
 +        android:pathData="M75,15 m-4,0 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0" />
 +
 +</vector>
-diff -Naur a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
---- a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java	2026-02-04 13:44:07.723608522 +0000
-+++ b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java	2026-02-04 13:44:07.754608520 +0000
-@@ -46,6 +46,11 @@
- import android.annotation.NonNull;
- import android.annotation.Nullable;
- import android.app.ActivityManager;
+--- a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java	2026-04-07 09:00:34.224064723 +0000
++++ b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java	2026-04-07 09:03:20.329225160 +0000
+@@ -63,7 +63,10 @@
+ import android.os.Handler;
+ import android.os.Trace;
+ import android.os.UserHandle;
 +import android.provider.Settings;
 +import android.util.Log;
+ import android.util.Size;
 +import android.util.TypedValue;
-+import android.widget.ImageButton;
+ import android.view.Choreographer;
+ import android.view.Display;
+ import android.view.InsetsState;
+@@ -75,6 +78,7 @@
+ import android.view.WindowManager;
+ import android.view.WindowManagerGlobal;
+ import android.widget.ImageButton;
 +import android.widget.ImageView;
- import android.app.WindowConfiguration.WindowingMode;
- import android.app.assist.AssistContent;
- import android.content.ComponentName;
-@@ -444,6 +449,7 @@
+ import android.window.DesktopExperienceFlags;
+ import android.window.DesktopModeFlags;
+ import android.window.TaskSnapshot;
+@@ -444,6 +448,7 @@
          if (!applyTransactionOnDraw) {
              t.apply();
          }
 +        updatePillStyle();
      }
-
+ 
      /**
-@@ -2171,4 +2177,52 @@
-             mUsed = true;
-         }
+@@ -2156,6 +2161,54 @@
+                 + "}";
      }
-+
+ 
 +    private void updatePillStyle() {
 +        if (mResult.mRootView == null) return;
 +
@@ -100,27 +105,28 @@ diff -Naur a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/Deskt
 +            //Log.e("DesktopModeFix", "CRASH CAUGHT! Here is the error:", e);
 +        }
 +    }
- }
-diff -Naur a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
---- a/packages/SystemUI/res/values/dimens.xml	2026-02-04 13:44:07.730608521 +0000
-+++ b/packages/SystemUI/res/values/dimens.xml	2026-02-04 13:44:07.760608519 +0000
-@@ -460,10 +460,10 @@
++
+     @VisibleForTesting
+     static class CapturedLink {
+         private final long mTimeStamp;
+--- a/packages/SystemUI/res/values/dimens.xml	2026-04-07 09:00:34.224064723 +0000
++++ b/packages/SystemUI/res/values/dimens.xml	2026-04-07 09:02:34.573558624 +0000
+@@ -464,10 +464,10 @@
      <dimen name="status_bar_icon_horizontal_margin">0sp</dimen>
-
+ 
      <!-- the padding on the start of the statusbar -->
 -    <dimen name="status_bar_padding_start">4dp</dimen>
 +    <dimen name="status_bar_padding_start">18dp</dimen>
-
+ 
      <!-- the padding on the end of the statusbar -->
 -    <dimen name="status_bar_padding_end">4dp</dimen>
 +    <dimen name="status_bar_padding_end">-4dp</dimen>
-
+ 
      <!-- the padding on the top of the statusbar (usually 0) -->
      <dimen name="status_bar_padding_top">0dp</dimen>
-diff -Naur a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java
---- a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java	2026-02-04 13:44:07.742608520 +0000
-+++ b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java	2026-02-04 13:44:07.772608518 +0000
-@@ -750,7 +750,7 @@
+--- a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java	2026-04-07 09:00:34.224064723 +0000
++++ b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java	2026-04-07 09:02:29.618053221 +0000
+@@ -765,7 +765,7 @@
          if (getExpanded()) {
              return onHeader || (yDiff < 0 && isTouchInQsArea(x, y));
          } else {
@@ -128,10 +134,9 @@ diff -Naur a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsContr
 +            return onHeader || (yDiff > mTouchSlop);
          }
      }
-
-diff -Naur a/services/core/java/com/android/server/wm/DisplayRotation.java b/services/core/java/com/android/server/wm/DisplayRotation.java
---- a/services/core/java/com/android/server/wm/DisplayRotation.java	2026-02-04 13:44:07.748608520 +0000
-+++ b/services/core/java/com/android/server/wm/DisplayRotation.java	2026-02-04 13:44:07.779608518 +0000
+ 
+--- a/services/core/java/com/android/server/wm/DisplayRotation.java	2026-04-07 09:00:34.224064723 +0000
++++ b/services/core/java/com/android/server/wm/DisplayRotation.java	2026-04-07 09:02:40.882202031 +0000
 @@ -549,6 +549,13 @@
          final int lastOrientation = mLastOrientation;
          @Surface.Rotation
@@ -146,4 +151,3 @@ diff -Naur a/services/core/java/com/android/server/wm/DisplayRotation.java b/ser
          // Use the saved rotation for tabletop mode, if set.
          if (mFoldController != null && mFoldController.shouldRevertOverriddenRotation()) {
              int prevRotation = rotation;
-             

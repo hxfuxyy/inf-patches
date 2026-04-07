@@ -1,12 +1,9 @@
-diff --git a/res/values/arrays.xml b/res/values/arrays.xml
-index fb99d03..1b53d91 100644
---- a/res/values/arrays.xml
-+++ b/res/values/arrays.xml
-@@ -1750,4 +1750,16 @@
-            <item>@string/settings_random4</item>
-            <item>@string/settings_random5</item>
-       </string-array>
-+
+--- a/res/values/arrays.xml	2026-04-07 09:00:34.224064723 +0000
++++ b/res/values/arrays.xml	2026-04-07 09:02:20.582131664 +0000
+@@ -1658,6 +1658,18 @@
+     <string-array name="display_over_apps_permission_change_exempt">
+     </string-array>
+ 
 +    <string-array name="desktop_pill">
 +        <item>Hidden (Transparent)</item>
 +        <item>Pill (Default)</item>
@@ -18,15 +15,16 @@ index fb99d03..1b53d91 100644
 +        <item>1</item>
 +        <item>2</item>
 +    </string-array>
- </resources>
-diff --git a/res/xml/display_settings.xml b/res/xml/display_settings.xml
-index 00ffb55..d11d22d 100644
---- a/res/xml/display_settings.xml
-+++ b/res/xml/display_settings.xml
-@@ -7,5 +7,14 @@
-             android:key="vr_display_pref"
-             android:title="@string/display_vr_pref_title"
-             android:fragment="com.android.settings.display.VrDisplayPreferencePicker"/>
++
+     <!-- Titles for Action Corner customization option. [CHAR LIMIT=35] -->
+     <string-array name="action_corner_action_titles">
+         <item>None</item>
+--- a/res/xml/display_settings.xml	2026-04-07 09:00:34.224064723 +0000
++++ b/res/xml/display_settings.xml	2026-04-07 09:02:07.184765291 +0000
+@@ -298,5 +298,14 @@
+             android:title="@string/floating_rotation_button_title"
+             android:summary="@string/floating_rotation_button_summary"
+             android:defaultValue="true" />
 +
 +        <ListPreference
 +            android:key="desktop_mode_pill_style"
@@ -38,11 +36,9 @@ index 00ffb55..d11d22d 100644
 +            settings:controller="com.android.settings.display.DesktopPillPreferenceController"/>
      </PreferenceCategory>
  </PreferenceScreen>
-diff --git a/src/com/android/settings/datausage/AppDataUsage.java b/src/com/android/settings/datausage/AppDataUsage.java
-index a2ca801..51676f3 100644
---- a/src/com/android/settings/datausage/AppDataUsage.java
-+++ b/src/com/android/settings/datausage/AppDataUsage.java
-@@ -13,6 +13,9 @@ public class AppDataUsage extends DataUsageBaseFragment implements OnPreferenceC
+--- a/src/com/android/settings/datausage/AppDataUsage.java	2026-04-07 09:00:34.224064723 +0000
++++ b/src/com/android/settings/datausage/AppDataUsage.java	2026-04-07 09:01:53.457365259 +0000
+@@ -406,6 +406,9 @@
      }
  
      private boolean hasInternetPermission() {
