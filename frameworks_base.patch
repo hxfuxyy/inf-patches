@@ -26,11 +26,11 @@ new file mode 100644
 +        android:pathData="M75,15 m-4,0 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0" />
 +
 +</vector>
+\ No newline at end of file
 diff --git a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
-index c00d04e05..0a5d42162 100644
 --- a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
 +++ b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
-@@ -46,6 +46,11 @@ import static com.android.wm.shell.windowdecor.viewholder.AppHandleIdentifier.Ap
+@@ -46,4 +46,9 @@ import static com.android.wm.shell.windowdecor.viewholder.AppHandleIdentifier.Ap
  import android.annotation.NonNull;
  import android.annotation.Nullable;
  import android.app.ActivityManager;
@@ -40,17 +40,16 @@ index c00d04e05..0a5d42162 100644
 +import android.widget.ImageButton;
 +import android.widget.ImageView;
  import android.app.WindowConfiguration.WindowingMode;
- import android.app.assist.AssistContent;
- import android.content.ComponentName;
-@@ -444,6 +449,7 @@ public class DesktopModeWindowDecoration extends WindowDecoration<WindowDecorLin
-         if (!applyTransactionOnDraw) {
-             t.apply();
-         }
-+        updatePillStyle();
-     }
+@@ -545,6 +550,8 @@ public class DesktopModeWindowDecoration extends WindowDecoration<WindowDecorLin
+         relayout(mRelayoutParams, startT, finishT, wct, oldRootView, taskSurface, mResult);
+         // After this line, mTaskInfo is up-to-date and should be used instead of taskInfo
  
-     /**
-@@ -2171,4 +2177,52 @@ public class DesktopModeWindowDecoration extends WindowDecoration<WindowDecorLin
++        updatePillStyle();
++
+         if (!wct.isEmpty()) {
+             if (DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue()
+                     && mRelayoutParams.mShouldSetAppBounds) {
+@@ -2171,4 +2178,48 @@ public class DesktopModeWindowDecoration extends WindowDecoration<WindowDecorLin
              mUsed = true;
          }
      }
@@ -61,14 +60,11 @@ index c00d04e05..0a5d42162 100644
 +        try {
 +            ImageButton handle = mResult.mRootView.findViewById(R.id.caption_handle);
 +            if (handle == null) {
-+                //Log.e("DesktopModeFix", "CRASH PREVENTED: Handle view is NULL!");
 +                return;
 +            }
 +
 +            int style = Settings.Global.getInt(
 +                    mContext.getContentResolver(), "desktop_mode_pill_style", 0);
-+
-+            //Log.d("DesktopModeFix", "Applying Pill Style: " + style);
 +
 +            int padVert = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
 +                    mContext.getResources().getDisplayMetrics());
@@ -99,29 +95,10 @@ index c00d04e05..0a5d42162 100644
 +            }
 +
 +        } catch (Exception e) {
-+            //Log.e("DesktopModeFix", "CRASH CAUGHT! Here is the error:", e);
 +        }
 +    }
  }
-diff --git a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
-index 407a7f8bb..77c272026 100644
---- a/packages/SystemUI/res/values/dimens.xml
-+++ b/packages/SystemUI/res/values/dimens.xml
-@@ -464,10 +464,10 @@
-     <dimen name="status_bar_icon_horizontal_margin">0sp</dimen>
- 
-     <!-- the padding on the start of the statusbar -->
--    <dimen name="status_bar_padding_start">4dp</dimen>
-+    <dimen name="status_bar_padding_start">18dp</dimen>
- 
-     <!-- the padding on the end of the statusbar -->
--    <dimen name="status_bar_padding_end">4dp</dimen>
-+    <dimen name="status_bar_padding_end">-4dp</dimen>
- 
-     <!-- the padding on the top of the statusbar (usually 0) -->
-     <dimen name="status_bar_padding_top">0dp</dimen>
 diff --git a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java
-index c68dfe70a..e051ef208 100644
 --- a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java
 +++ b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java
 @@ -791,7 +791,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
@@ -133,30 +110,31 @@ index c68dfe70a..e051ef208 100644
          }
      }
  
-diff --git a/services/core/java/com/android/server/wm/DisplayRotation.java b/services/core/java/com/android/server/wm/DisplayRotation.java
-index ab0fbd4f4..7edea9271 100644
---- a/services/core/java/com/android/server/wm/DisplayRotation.java
-+++ b/services/core/java/com/android/server/wm/DisplayRotation.java
-@@ -543,6 +543,22 @@ public class DisplayRotation {
-             return false;
-         }
+diff --git a/services/core/java/com/android/server/wm/DisplayContent.java b/services/core/java/com/android/server/wm/DisplayContent.java
+--- a/services/core/java/com/android/server/wm/DisplayContent.java
++++ b/services/core/java/com/android/server/wm/DisplayContent.java
+@@ -6824,6 +6824,24 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
  
-+        // Preserve locked user rotation across screen off/on and keyguard
-+        if (mUserRotationMode == WindowManagerPolicy.USER_ROTATION_LOCKED) {
-+            final WindowContainer<?> source = mDisplayContent.getLastOrientationSource();
-+            final boolean isAppRequest = source != null &&
-+                    (source.asActivityRecord() != null ||
-+                    (source.asWindowState() != null && source.asWindowState().mActivityRecord != null));
-+            // If an app explicitly requests a fixed orientation (e.g., a landscape game),
-+            // allow it to override the user lock. Otherwise, preserve the user's locked rotation.
-+            if (!isAppRequest || !ActivityInfo.isFixedOrientation(lastOrientation)) {
-+                rotation = mUserRotation;
-+                ProtoLog.v(WM_DEBUG_ORIENTATION,
-+                        "Preserving locked user rotation=%s (%d)",
-+                        Surface.rotationToString(rotation), rotation);
-+            }
+     @Override
+     boolean getIgnoreOrientationRequest() {
++        // Check if the immediate top activity requests fixed landscape.
++        // This prevents Size Compat mode (SCM) from incorrectly letterboxing
++        // landscape-only games during the initial launch transition.
++        final ActivityRecord topActivity = topRunningActivity();
++        if (topActivity != null && android.content.pm.ActivityInfo
++                .isFixedOrientationLandscape(topActivity.getRequestedOrientation())) {
++            return false;
 +        }
 +
-         @Surface.Rotation
-         final int oldRotation = mRotation;
-         @ScreenOrientation
++        // Fallback to the underlying orientation source to ensure transparent
++        // overlays (e.g., GooglePlay games sign-in bottom sheets) don't
++        // inadvertently trigger the large screen portrait fallback.
++        final ActivityRecord orientationSource = getLastOrientationSourceApp();
++        if (orientationSource != null && android.content.pm.ActivityInfo
++                .isFixedOrientationLandscape(orientationSource.getRequestedOrientation())) {
++            return false;
++        }
++
+         if (mHasSetIgnoreOrientationRequest
+                 || !com.android.window.flags.Flags.universalResizableByDefault()) {
+             return super.getIgnoreOrientationRequest();
