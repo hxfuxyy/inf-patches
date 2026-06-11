@@ -1,6 +1,8 @@
-diff -Naur a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml
---- a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml	1970-01-01 00:00:00.000000000 +0000
-+++ b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml	2026-02-04 13:44:19.112607654 +0000
+diff --git a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml
+new file mode 100644
+index 0000000..c201e00
+--- /dev/null
++++ b/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml
 @@ -0,0 +1,23 @@
 +<vector xmlns:android="http://schemas.android.com/apk/res/android"
 +    android:width="120dp"
@@ -25,30 +27,32 @@ diff -Naur a/libs/WindowManager/Shell/res/drawable/ic_desktop_pill_dots.xml b/li
 +        android:pathData="M75,15 m-4,0 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0" />
 +
 +</vector>
-diff -Naur a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
---- a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java	2026-02-04 13:44:07.723608522 +0000
-+++ b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java	2026-02-04 13:44:07.754608520 +0000
-@@ -46,6 +46,11 @@
- import android.annotation.NonNull;
- import android.annotation.Nullable;
- import android.app.ActivityManager;
+\ No newline at end of file
+diff --git a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
+index c00d04e..f243333 100644
+--- a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
++++ b/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/DesktopModeWindowDecoration.java
+@@ -43,6 +43,10 @@ import static com.android.wm.shell.windowdecor.DragResizeWindowGeometry.getResiz
+ import static com.android.wm.shell.windowdecor.DragResizeWindowGeometry.getResizeHandleEdgeInset;
+ import static com.android.wm.shell.windowdecor.viewholder.AppHandleIdentifier.AppHandleWindowingMode;
+ 
 +import android.provider.Settings;
 +import android.util.Log;
 +import android.util.TypedValue;
-+import android.widget.ImageButton;
 +import android.widget.ImageView;
- import android.app.WindowConfiguration.WindowingMode;
- import android.app.assist.AssistContent;
- import android.content.ComponentName;
-@@ -444,6 +449,7 @@
-         if (!applyTransactionOnDraw) {
-             t.apply();
-         }
+ import android.annotation.NonNull;
+ import android.annotation.Nullable;
+ import android.app.ActivityManager;
+@@ -545,6 +549,8 @@ public class DesktopModeWindowDecoration extends WindowDecoration<WindowDecorLin
+         relayout(mRelayoutParams, startT, finishT, wct, oldRootView, taskSurface, mResult);
+         // After this line, mTaskInfo is up-to-date and should be used instead of taskInfo
+ 
 +        updatePillStyle();
-     }
-
-     /**
-@@ -2171,4 +2177,52 @@
++
+         if (!wct.isEmpty()) {
+             if (DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue()
+                     && mRelayoutParams.mShouldSetAppBounds) {
+@@ -2171,4 +2177,52 @@ public class DesktopModeWindowDecoration extends WindowDecoration<WindowDecorLin
              mUsed = true;
          }
      }
@@ -101,99 +105,61 @@ diff -Naur a/libs/WindowManager/Shell/src/com/android/wm/shell/windowdecor/Deskt
 +        }
 +    }
  }
-diff -Naur a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
---- a/packages/SystemUI/res/values/dimens.xml	2026-02-04 13:44:07.730608521 +0000
-+++ b/packages/SystemUI/res/values/dimens.xml	2026-02-04 13:44:07.760608519 +0000
-@@ -460,10 +460,10 @@
-     <dimen name="status_bar_icon_horizontal_margin">0sp</dimen>
-
-     <!-- the padding on the start of the statusbar -->
--    <dimen name="status_bar_padding_start">4dp</dimen>
-+    <dimen name="status_bar_padding_start">18dp</dimen>
-
-     <!-- the padding on the end of the statusbar -->
--    <dimen name="status_bar_padding_end">4dp</dimen>
-+    <dimen name="status_bar_padding_end">-4dp</dimen>
-
-     <!-- the padding on the top of the statusbar (usually 0) -->
-     <dimen name="status_bar_padding_top">0dp</dimen>
-diff -Naur a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java
---- a/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java	2026-02-04 13:44:07.742608520 +0000
-+++ b/packages/SystemUI/src/com/android/systemui/shade/QuickSettingsControllerImpl.java	2026-02-04 13:44:07.772608518 +0000
-@@ -750,7 +750,7 @@
-         if (getExpanded()) {
-             return onHeader || (yDiff < 0 && isTouchInQsArea(x, y));
-         } else {
--            return onHeader;
-+            return onHeader || (yDiff > mTouchSlop);
-         }
-     }
-
-diff -Naur a/services/core/java/com/android/server/wm/DisplayRotation.java b/services/core/java/com/android/server/wm/DisplayRotation.java
---- a/services/core/java/com/android/server/wm/DisplayRotation.java	2026-02-04 13:44:07.748608520 +0000
-+++ b/services/core/java/com/android/server/wm/DisplayRotation.java	2026-02-04 13:44:07.779608518 +0000
-@@ -549,6 +549,13 @@
+diff --git a/services/core/java/com/android/server/wm/DisplayContent.java b/services/core/java/com/android/server/wm/DisplayContent.java
+index 701ec2a..8b67dae 100644
+--- a/services/core/java/com/android/server/wm/DisplayContent.java
++++ b/services/core/java/com/android/server/wm/DisplayContent.java
+@@ -6806,6 +6806,24 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
+ 
+     @Override
+     boolean getIgnoreOrientationRequest() {
++        // Check if the immediate top activity requsets fixed landscape.
++        // This prevents Size Compat mode (SCM) from incorrectly letterboxing
++        // landscape only games during the initial launch transition.
++        final ActivityRecord topActivity = topRunningActivity();
++        if (topActivity != null && android.content.pm.ActivityInfo
++                .isFixedOrientationLandscape(topActivity.getRequestedOrientation())) {
++            return false;
++        }
++
++        // Fallback to the underlying orientation source to ensure transparnt
++        // overlays (e.g., GooglePlay games sign-in bottom sheets) don't
++        // inadvertently trigger the large screen portrait fallback.
++        final ActivityRecord orientationSource = getLastOrientationSourceApp();
++        if (orientationSource != null && android.content.pm.ActivityInfo
++                .isFixedOrientationLandscape(orientationSource.getRequestedOrientation())) {
++            return false;
++        }
++
+         if (mHasSetIgnoreOrientationRequest
+                 || !com.android.window.flags.Flags.universalResizableByDefault()) {
+             return super.getIgnoreOrientationRequest();
+diff --git a/services/core/java/com/android/server/wm/DisplayRotation.java b/services/core/java/com/android/server/wm/DisplayRotation.java
+index ab0fbd4..dc888df 100644
+--- a/services/core/java/com/android/server/wm/DisplayRotation.java
++++ b/services/core/java/com/android/server/wm/DisplayRotation.java
+@@ -549,6 +549,24 @@ public class DisplayRotation {
          final int lastOrientation = mLastOrientation;
          @Surface.Rotation
          int rotation = rotationForOrientation(lastOrientation, oldRotation);
++
++        // Preserve locked user rotation across screen off/on and keyguard
 +        if (mUserRotationMode == WindowManagerPolicy.USER_ROTATION_LOCKED) {
-+            rotation = mUserRotation;
-+            ProtoLog.v(WM_DEBUG_ORIENTATION,
-+                    "Forcing locked user rotation=%s (%d)",
-+                    Surface.rotationToString(rotation), rotation);
++            final WindowContainer<?> source = mDisplayContent.getLastOrientationSource();
++            final boolean isAppRequest = source != null &&
++                    (source.asActivityRecord() != null ||
++                    (source.asWindowState() != null && source.asWindowState().mActivityRecord != null));
++
++            // If an app explicitly requests a fixed orientation (e.g., a landscape game),
++            // allow it to override the user lock. Otherwise, preserve the user's locked rotation.
++            if (!isAppRequest || !ActivityInfo.isFixedOrientation(lastOrientation)) {
++                rotation = mUserRotation;
++                ProtoLog.v(WM_DEBUG_ORIENTATION,
++                        "Preserving locked user rotation=%s (%d)",
++                        Surface.rotationToString(rotation), rotation);
++            }
 +        }
 +
          // Use the saved rotation for tabletop mode, if set.
          if (mFoldController != null && mFoldController.shouldRevertOverriddenRotation()) {
              int prevRotation = rotation;
-diff -Naur a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt
---- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt
-+++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/blueprints/SplitShadeKeyguardBlueprint.kt
-@@ -35,6 +35,7 @@
- import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardClockStyleSection
- import com.android.systemui.keyguard.ui.view.layout.sections.AODStyleSection
- import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardSliceViewSection
-+import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardWidgetViewSection
- import com.android.systemui.keyguard.ui.view.layout.sections.SmartspaceSection
- import com.android.systemui.keyguard.ui.view.layout.sections.SplitShadeGuidelines
- import com.android.systemui.keyguard.ui.view.layout.sections.SplitShadeMediaSection
-@@ -74,6 +75,7 @@
-     aODStyleSection: AODStyleSection,
-     mediaSection: SplitShadeMediaSection,
-     keyguardSliceViewSection: KeyguardSliceViewSection,
-+    keyguardWidgetViewSection: KeyguardWidgetViewSection,
- ) : KeyguardBlueprint {
-     override val id: String = ID
- 
-@@ -95,6 +97,7 @@
-             clockSection,
-             keyguardSliceViewSection,
-             infoWidgetsSection,
-+            keyguardWidgetViewSection,
-             keyguardClockStyleSection,
-             aODStyleSection,
-             mediaSection,
---- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardWidgetViewSection.kt
-+++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardWidgetViewSection.kt
-@@ -270,4 +270,9 @@
-         }
-         widgetView = null
-     }
-+
-+    // Use instance identity so blueprint intersect() treats each blueprint's
-+    // instance as distinct → addViews/removeViews are called on blueprint switch
-+    override fun equals(other: Any?): Boolean = this === other
-+    override fun hashCode(): Int = System.identityHashCode(this)
- }
---- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardClockStyleSection.kt
-+++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/KeyguardClockStyleSection.kt
-@@ -132,4 +132,9 @@
-         }
-         clockStyleView = null
-     }
-+
-+    // Use instance identity so blueprint intersect() treats each blueprint's
-+    // instance as distinct → addViews/removeViews are called on blueprint switch
-+    override fun equals(other: Any?): Boolean = this === other
-+    override fun hashCode(): Int = System.identityHashCode(this)
- }

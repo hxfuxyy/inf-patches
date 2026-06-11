@@ -1,11 +1,11 @@
 diff --git a/res/values/arrays.xml b/res/values/arrays.xml
-index fb99d03..1b53d91 100644
+index 25c5d7e..3590f5f 100644
 --- a/res/values/arrays.xml
 +++ b/res/values/arrays.xml
-@@ -1750,4 +1750,16 @@
-            <item>@string/settings_random4</item>
-            <item>@string/settings_random5</item>
-       </string-array>
+@@ -1765,4 +1765,16 @@
+         <item>#fbb404</item>
+         <item>#e13e39</item>
+     </array>
 +
 +    <string-array name="desktop_pill">
 +        <item>Hidden (Transparent)</item>
@@ -20,10 +20,10 @@ index fb99d03..1b53d91 100644
 +    </string-array>
  </resources>
 diff --git a/res/xml/display_settings.xml b/res/xml/display_settings.xml
-index 00ffb55..d11d22d 100644
+index 7653b38..76f9609 100644
 --- a/res/xml/display_settings.xml
 +++ b/res/xml/display_settings.xml
-@@ -7,5 +7,14 @@
+@@ -304,5 +304,15 @@
              android:key="vr_display_pref"
              android:title="@string/display_vr_pref_title"
              android:fragment="com.android.settings.display.VrDisplayPreferencePicker"/>
@@ -36,22 +36,9 @@ index 00ffb55..d11d22d 100644
 +            android:entryValues="@array/desktop_pill_values"
 +            android:defaultValue="0"
 +            settings:controller="com.android.settings.display.DesktopPillPreferenceController"/>
++
      </PreferenceCategory>
  </PreferenceScreen>
-diff --git a/src/com/android/settings/datausage/AppDataUsage.java b/src/com/android/settings/datausage/AppDataUsage.java
-index a2ca801..51676f3 100644
---- a/src/com/android/settings/datausage/AppDataUsage.java
-+++ b/src/com/android/settings/datausage/AppDataUsage.java
-@@ -13,6 +13,9 @@ public class AppDataUsage extends DataUsageBaseFragment implements OnPreferenceC
-     }
- 
-     private boolean hasInternetPermission() {
-+        if (mPackageName == null) {
-+            return false;
-+        }
-         return mPackageManager.checkPermission(Manifest.permission.INTERNET, mPackageName)
-                 == PackageManager.PERMISSION_GRANTED;
-     }
 diff --git a/src/com/android/settings/display/DesktopPillPreferenceController.java b/src/com/android/settings/display/DesktopPillPreferenceController.java
 new file mode 100644
 index 0000000..aa883b8
